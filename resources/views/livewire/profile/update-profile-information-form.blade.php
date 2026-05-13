@@ -30,7 +30,16 @@ new class extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                // Optimization: Only run the unique validation query if the email has actually changed.
+                // This avoids an unnecessary database hit when saving other profile details.
+                $this->email !== $user->email ? Rule::unique(User::class)->ignore($user->id) : null,
+            ],
         ]);
 
         $user->fill($validated);
