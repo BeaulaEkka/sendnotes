@@ -30,7 +30,15 @@ new class extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                // Only validate uniqueness if the email has changed to save a database query.
+                $this->email !== $user->email ? Rule::unique(User::class) : null,
+            ],
         ]);
 
         $user->fill($validated);
