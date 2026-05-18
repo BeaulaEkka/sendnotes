@@ -31,6 +31,7 @@ new class extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => [
+                'bail',
                 'required',
                 'string',
                 'lowercase',
