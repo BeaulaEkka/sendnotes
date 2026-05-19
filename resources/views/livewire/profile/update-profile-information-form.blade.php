@@ -31,6 +31,9 @@ new class extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => [
+                // 'bail' stops validation after the first failure, preventing expensive
+                // database-driven 'unique' checks if basic format validation fails.
+                'bail',
                 'required',
                 'string',
                 'lowercase',
