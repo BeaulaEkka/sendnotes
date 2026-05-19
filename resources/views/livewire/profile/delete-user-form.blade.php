@@ -14,7 +14,8 @@ new class extends Component
     public function deleteUser(Logout $logout): void
     {
         $this->validate([
-            'password' => ['required', 'string', 'current_password'],
+            // 'bail' prevents expensive password hash comparison if basic validation fails.
+            'password' => ['bail', 'required', 'string', 'current_password'],
         ]);
 
         tap(Auth::user(), $logout(...))->delete();

@@ -19,7 +19,8 @@ new class extends Component
     {
         try {
             $validated = $this->validate([
-                'current_password' => ['required', 'string', 'current_password'],
+                // 'bail' prevents expensive password hash comparison if basic validation fails.
+                'current_password' => ['bail', 'required', 'string', 'current_password'],
                 'password' => ['required', 'string', Password::defaults(), 'confirmed'],
             ]);
         } catch (ValidationException $e) {
