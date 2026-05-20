@@ -22,9 +22,9 @@ new #[Layout('layouts.guest')] class extends Component
     public function register(): void
     {
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'name' => ['bail', 'required', 'string', 'max:255'],
+            'email' => ['bail', 'required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class], // Bail to avoid redundant DB unique check.
+            'password' => ['bail', 'required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
