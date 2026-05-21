@@ -14,7 +14,12 @@ new #[Layout('layouts.guest')] class extends Component
     public function sendPasswordResetLink(): void
     {
         $this->validate([
-            'email' => ['required', 'string', 'email'],
+            'email' => [
+                'bail', // Stop validation after first failure to avoid unnecessary processing.
+                'required',
+                'string',
+                'email',
+            ],
         ]);
 
         // We will send the password reset link to this user. Once we have attempted
