@@ -12,10 +12,23 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
+    #[Validate([
+        'email' => [
+            'bail', // Stop validation after first failure to avoid unnecessary processing.
+            'required',
+            'string',
+            'email',
+        ],
+    ])]
     public string $email = '';
 
-    #[Validate('required|string')]
+    #[Validate([
+        'password' => [
+            'bail', // Stop validation after first failure to avoid unnecessary processing.
+            'required',
+            'string',
+        ],
+    ])]
     public string $password = '';
 
     #[Validate('boolean')]
