@@ -5,3 +5,7 @@
 ## 2026-05-17 - Bail Validation Rule for Redundant Checks
 **Learning:** Validation rules like `unique` or `current_password` involve database queries or expensive hashing. Without the `bail` rule, these are executed even if previous rules (like `required` or `email` format) fail.
 **Action:** Always include `bail` at the start of validation rule arrays for attributes that have database-driven or computationally expensive rules to ensure early exit on failure.
+
+## 2026-05-18 - Efficient Password Confirmation
+**Learning:** Manual password validation using `Auth::validate(['email' => $user->email, 'password' => $password])` triggers a redundant database query to re-fetch the user by email.
+**Action:** Use the Laravel `current_password` validation rule for authenticated users to verify their password without an extra database lookup.
