@@ -9,3 +9,7 @@
 ## 2026-05-18 - Efficient Password Confirmation
 **Learning:** Manual password validation using `Auth::validate(['email' => $user->email, 'password' => $password])` triggers a redundant database query to re-fetch the user by email.
 **Action:** Use the Laravel `current_password` validation rule for authenticated users to verify their password without an extra database lookup.
+
+## 2026-05-19 - Memoization of Request-Based Identifiers
+**Learning:** Helper-heavy identifiers like rate-limiting throttle keys (using `Str::transliterate`, `Str::lower`, `request()->ip()`) add avoidable overhead when accessed multiple times in a single request.
+**Action:** Memoize string-based identifiers in private properties of Livewire components or Form objects when they are used more than once (e.g., in `ensureIsNotRateLimited` and `authenticate`).

@@ -12,10 +12,16 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
+    /**
+     * Use 'bail' to stop running validation rules on an attribute after the first failure.
+     */
+    #[Validate(['bail', 'required', 'string', 'email'])]
     public string $email = '';
 
-    #[Validate('required|string')]
+    /**
+     * Use 'bail' to stop running validation rules on an attribute after the first failure.
+     */
+    #[Validate(['bail', 'required', 'string'])]
     public string $password = '';
 
     #[Validate('boolean')]
@@ -42,17 +48,25 @@ class LoginForm extends Form
     }
 
     /**
+     * The cached throttle key.
+     *
+     * Memoizing the throttle key avoids redundant string transformations
+     * and IP address lookups during the authentication process.
+     */
+    private ?string $throttleKey = null;
+
+    /**
      * Ensure the authentication request is not rate limited.
      */
     protected function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! RateLimiter::tooManyAttempts($this->getThrottleKey(), 5)) {
             return;
         }
 
         event(new Lockout(request()));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $seconds = RateLimiter::availableIn($this->getThrottleKey());
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
@@ -65,8 +79,16 @@ class LoginForm extends Form
     /**
      * Get the authentication rate limiting throttle key.
      */
+    protected function getThrottleKey(): string
+    {
+        return $this->throttleKey ??= Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+    }
+
+    /**
+     * Get the authentication rate limiting throttle key.
+     */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return $this->getThrottleKey();
     }
 }
