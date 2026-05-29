@@ -12,10 +12,12 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
+    protected ?string $throttleKey = null;
+
+    #[Validate(['bail', 'required', 'string', 'email'])]
     public string $email = '';
 
-    #[Validate('required|string')]
+    #[Validate(['bail', 'required', 'string'])]
     public string $password = '';
 
     #[Validate('boolean')]
@@ -67,6 +69,6 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return $this->throttleKey ??= Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
 }
