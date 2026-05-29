@@ -9,3 +9,7 @@
 ## 2026-05-18 - Efficient Password Confirmation
 **Learning:** Manual password validation using `Auth::validate(['email' => $user->email, 'password' => $password])` triggers a redundant database query to re-fetch the user by email.
 **Action:** Use the Laravel `current_password` validation rule for authenticated users to verify their password without an extra database lookup.
+
+## 2026-05-19 - Memoizing Rate Limiter Throttle Keys
+**Learning:** The `throttleKey()` method in authentication forms is often called multiple times per request (to check, hit, and clear limits). It usually involves string operations like `Str::lower`, `Str::transliterate`, and `request()->ip()`.
+**Action:** Memoize the `throttleKey()` result in a protected property within the Form object or component to avoid redundant processing.
