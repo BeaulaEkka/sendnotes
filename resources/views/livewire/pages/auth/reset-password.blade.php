@@ -34,9 +34,9 @@ new #[Layout('layouts.guest')] class extends Component
     public function resetPassword(): void
     {
         $this->validate([
-            'token' => ['required'],
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'token' => ['bail', 'required'],
+            'email' => ['bail', 'required', 'string', 'email'],
+            'password' => ['bail', 'required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
@@ -46,7 +46,7 @@ new #[Layout('layouts.guest')] class extends Component
             $this->only('email', 'password', 'password_confirmation', 'token'),
             function ($user) {
                 $user->forceFill([
-                    'password' => Hash::make($this->password),
+                    'password' => $this->password,
                     'remember_token' => Str::random(60),
                 ])->save();
 
